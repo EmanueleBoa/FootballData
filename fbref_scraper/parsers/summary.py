@@ -2,9 +2,11 @@ from typing import Optional, List
 
 import bs4
 
+from .base import BaseParser
 
-class MatchSummaryParser:
-    def parse_summary(self, html: str) -> List[dict]:
+
+class MatchSummaryParser(BaseParser):
+    def parse(self, html: str) -> List[dict]:
         soup = bs4.BeautifulSoup(html, 'html.parser')
         raw_events = self._get_raw_events(soup)
         parsed_events = [self._parse_event(event) for event in raw_events]

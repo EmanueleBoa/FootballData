@@ -2,9 +2,11 @@ from typing import Optional, List
 
 import bs4
 
+from .base import BaseParser
 
-class FixturesParser:
-    def parse_fixtures(self, html: str) -> List[dict]:
+
+class FixturesParser(BaseParser):
+    def parse(self, html: str) -> List[dict]:
         soup = bs4.BeautifulSoup(html, 'html.parser')
         fixtures = self._get_raw_fixtures(soup)
         parsed_fixtures = [self._parse_fixture(fixture) for fixture in fixtures]
