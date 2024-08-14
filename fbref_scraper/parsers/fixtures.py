@@ -15,7 +15,7 @@ class FixturesParser(BaseParser):
 
     @staticmethod
     def _get_raw_fixtures(soup: bs4.BeautifulSoup) -> bs4.element.ResultSet:
-        fixtures_table = soup.find_all("tbody")[0]
+        fixtures_table = soup.find_all('tbody')[0]
         fixtures = fixtures_table.find_all('tr')
         return fixtures
 
