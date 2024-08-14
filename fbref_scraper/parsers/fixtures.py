@@ -1,6 +1,6 @@
 from typing import Optional, List
 
-import bs4 as bs4
+import bs4
 
 
 class FixturesParser:
