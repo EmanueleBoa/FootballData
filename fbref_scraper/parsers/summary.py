@@ -4,7 +4,8 @@ import bs4
 
 
 class MatchSummaryParser:
-    def parse_summary(self, soup: bs4.BeautifulSoup) -> List[dict]:
+    def parse_summary(self, html: str) -> List[dict]:
+        soup = bs4.BeautifulSoup(html, 'html.parser')
         raw_events = self._get_raw_events(soup)
         parsed_events = [self._parse_event(event) for event in raw_events]
         valid_events = [event for event in parsed_events if event is not None]

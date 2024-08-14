@@ -4,7 +4,8 @@ import bs4
 
 
 class FixturesParser:
-    def parse_fixtures(self, soup: bs4.BeautifulSoup) -> List[dict]:
+    def parse_fixtures(self, html: str) -> List[dict]:
+        soup = bs4.BeautifulSoup(html, 'html.parser')
         fixtures = self._get_raw_fixtures(soup)
         parsed_fixtures = [self._parse_fixture(fixture) for fixture in fixtures]
         valid_fixtures = [fixture for fixture in parsed_fixtures if fixture is not None]
