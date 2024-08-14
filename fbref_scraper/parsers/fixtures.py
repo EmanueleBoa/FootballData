@@ -5,11 +5,16 @@ import bs4 as bs4
 
 class FixturesParser:
     def parse_fixtures(self, soup: bs4.BeautifulSoup) -> List[dict]:
-        fixtures_table = soup.find_all("tbody")[0]
-        fixtures = fixtures_table.find_all('tr')
+        fixtures = self._get_raw_fixtures(soup)
         parsed_fixtures = [self._parse_fixture(fixture) for fixture in fixtures]
         valid_fixtures = [fixture for fixture in parsed_fixtures if fixture is not None]
         return valid_fixtures
+
+    @staticmethod
+    def _get_raw_fixtures(soup: bs4.BeautifulSoup) -> bs4.element.ResultSet:
+        fixtures_table = soup.find_all("tbody")[0]
+        fixtures = fixtures_table.find_all('tr')
+        return fixtures
 
     def _parse_fixture(self, fixture: bs4.element.Tag) -> Optional[dict]:
         week = self._get_match_week(fixture)
