@@ -3,13 +3,17 @@ from typing import Optional, List
 import bs4
 
 from .base import BaseParser
+from ..exceptions import ParseError
 
 
 class MatchSummaryParser(BaseParser):
     def parse(self, html: str) -> List[dict]:
         soup = bs4.BeautifulSoup(html, 'html.parser')
         raw_events = self._get_raw_events(soup)
-        parsed_events = [self._parse_event(event) for event in raw_events]
+        try:
+            parsed_events = [self._parse_event(event) for event in raw_events]
+        except Exception as e:
+            raise ParseError(f'Error while parsing match summary: {e}')
         valid_events = [event for event in parsed_events if event is not None]
         return valid_events
 

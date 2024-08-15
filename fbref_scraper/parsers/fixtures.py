@@ -3,13 +3,17 @@ from typing import Optional, List
 import bs4
 
 from .base import BaseParser
+from ..exceptions import ParseError
 
 
 class FixturesParser(BaseParser):
     def parse(self, html: str) -> List[dict]:
         soup = bs4.BeautifulSoup(html, 'html.parser')
         fixtures = self._get_raw_fixtures(soup)
-        parsed_fixtures = [self._parse_fixture(fixture) for fixture in fixtures]
+        try:
+            parsed_fixtures = [self._parse_fixture(fixture) for fixture in fixtures]
+        except Exception as e:
+            raise ParseError(f'Error while parsing fixtures: {e}')
         valid_fixtures = [fixture for fixture in parsed_fixtures if fixture is not None]
         return valid_fixtures
 

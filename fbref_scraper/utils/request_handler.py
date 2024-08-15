@@ -1,4 +1,4 @@
-import requests as requests
+import requests
 
 from ..exceptions import RequestError
 
@@ -11,4 +11,4 @@ class RequestHandler:
             response.raise_for_status()
             return response.text
         except requests.RequestException as e:
-            raise RequestError(f"Request {url} failed: {str(e)}")
+            raise RequestError(f"Request failed: {str(e)}")
