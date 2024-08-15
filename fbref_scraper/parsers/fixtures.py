@@ -10,10 +10,13 @@ class FixturesParser(BaseParser):
     def parse(self, html: str) -> List[dict]:
         soup = bs4.BeautifulSoup(html, 'html.parser')
         fixtures = self._get_raw_fixtures(soup)
-        try:
-            parsed_fixtures = [self._parse_fixture(fixture) for fixture in fixtures]
-        except Exception as e:
-            raise ParseError(f'Error while parsing fixtures: {e}')
+        parsed_fixtures = []
+        for fixture in fixtures:
+            try:
+                parsed_fixtures.append(self._parse_fixture(fixture))
+            except Exception as e:
+                raise ParseError(f'Error while parsing fixture {fixture}: {e}')
+
         valid_fixtures = [fixture for fixture in parsed_fixtures if fixture is not None]
         return valid_fixtures
 
