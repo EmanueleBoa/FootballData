@@ -1,3 +1,4 @@
+import re
 from typing import Optional, List
 
 import bs4
@@ -53,7 +54,7 @@ class FixturesParser(BaseParser):
 
     @staticmethod
     def _get_match_week(fixture: bs4.element.Tag) -> Optional[int]:
-        week = fixture.find('th', {'data-stat': 'gameweek'}).text
+        week = fixture.find(re.compile("^t"), {'data-stat': 'gameweek'}).text
         if week == '':
             return None
         return int(week)
