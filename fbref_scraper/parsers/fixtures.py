@@ -83,10 +83,10 @@ class FixturesParser(BaseParser):
 
     @staticmethod
     def _get_team_xg(fixture: bs4.element.Tag, ground: str) -> Optional[float]:
-        xg = fixture.find('td', {'data-stat': ground + '_xg'}).text
-        if xg == '':
+        xg = fixture.find('td', {'data-stat': ground + '_xg'})
+        if xg is None or xg.text == '':
             return None
-        return float(xg)
+        return float(xg.text)
 
     @staticmethod
     def _get_match_report_url(fixture: bs4.element.Tag) -> Optional[str]:
