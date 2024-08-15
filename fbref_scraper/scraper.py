@@ -8,10 +8,7 @@ class FbRefScraper:
         self.request_handler = RequestHandler()
 
     def download_fixtures(self, competition_name: str, season: str):
-        competition_id = competition_name_to_id.get(competition_name)
-        if competition_id is None:
-            raise Exception(f'Competition {competition_name} not supported! '
-                            f'Available competitions are: {list(competition_name_to_id.keys())}')
+        competition_id = self._get_competition_id(competition_name)
         url = f'{BASE_URL}/comps/{competition_id}/{season}/schedule/'
         html = self.request_handler.get(url)
         fixtures = FixturesParser().parse(html)
@@ -26,3 +23,12 @@ class FbRefScraper:
         url = f'{BASE_URL}/matches/{match_id}/'
         html = self.request_handler.get(url)
         return MatchSummaryParser().parse(html)
+
+    @staticmethod
+    def _get_competition_id(competition_name):
+        competition_id = competition_name_to_id.get(competition_name)
+        if competition_id is None:
+            raise Exception(f'Competition {competition_name} not supported! '
+                            f'Available competitions are: {list(competition_name_to_id.keys())}')
+        return competition_id
+
