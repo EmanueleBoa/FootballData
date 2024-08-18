@@ -1,6 +1,6 @@
 from .config import BASE_URL, competition_name_to_id
 from .parsers import FixturesParser, MatchSummaryParser, ShotsParser
-from .utils import RequestHandler
+from .network import RequestHandler
 
 
 class FbRefScraper:
