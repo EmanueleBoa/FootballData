@@ -3,6 +3,7 @@ from typing import Optional, List
 import bs4
 
 from .base import BaseParser
+from .utils import get_period_and_minute, get_entity_id_and_name
 from ..exceptions import ParseError
 
 
@@ -49,16 +50,11 @@ class MatchSummaryParser(BaseParser):
     @staticmethod
     def _get_event_period_and_minute(event: bs4.element.Tag) -> tuple[str, int]:
         minute_string = event.find('div').text.split('\n')[1].replace('\t', '').replace('\xa0', '').replace('’', '')
-        minutes = [int(x) for x in minute_string.split('+')]
-        period = '1H' if minutes[0] <= 45 else '2H'
-        minute = sum(minutes)
-        return period, minute
+        return get_period_and_minute(minute_string)
 
     @staticmethod
     def _get_player_info(event: bs4.element.Tag) -> tuple[Optional[str], Optional[str]]:
         player = event.find('a')
         if player is None:
             return None, None
-        player_name = player.text
-        player_id = player.get('href').split('/')[3]
-        return player_id, player_name
+        return get_entity_id_and_name(player)

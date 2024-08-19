@@ -4,6 +4,7 @@ from typing import List, Optional, Tuple
 import bs4
 
 from .base import BaseParser
+from .utils import get_period_and_minute, get_entity_id_and_name
 
 
 class ShotsParser(BaseParser):
@@ -53,24 +54,17 @@ class ShotsParser(BaseParser):
     @staticmethod
     def _get_shot_period_and_minute(shot: bs4.element.Tag) -> Tuple[str, int]:
         minute_string = shot.find('th', {'data-stat': 'minute'}).text
-        minutes = [int(x) for x in minute_string.split('+')]
-        period = '1H' if minutes[0] <= 45 else '2H'
-        minute = sum(minutes)
-        return period, minute
+        return get_period_and_minute(minute_string)
 
     @staticmethod
     def _get_player_info(shot: bs4.element.Tag) -> Tuple[str, str]:
         player = shot.find('td', {'data-stat': 'player'}).find('a')
-        player_name = player.text
-        player_id = player.get('href').split('/')[3]
-        return player_id, player_name
+        return get_entity_id_and_name(player)
 
     @staticmethod
     def _get_team_info(shot: bs4.element.Tag) -> Tuple[str, str]:
         team = shot.find('td', {'data-stat': 'team'}).find('a')
-        team_id = team.get('href').split('/')[3]
-        team_name = team.text
-        return team_id, team_name
+        return get_entity_id_and_name(team)
 
     @staticmethod
     def _get_xg(shot: bs4.element.Tag) -> Optional[float]:
