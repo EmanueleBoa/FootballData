@@ -49,7 +49,7 @@ class FbRefScraper:
         }
 
     @staticmethod
-    def _get_competition_id(competition_name):
+    def _get_competition_id(competition_name: str) -> str:
         competition_id = competition_name_to_id.get(competition_name)
         if competition_id is None:
             raise Exception(f'Competition {competition_name} not supported! '
