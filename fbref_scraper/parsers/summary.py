@@ -4,6 +4,7 @@ import bs4
 
 from .base import BaseParser
 from .utils import get_period_and_minute, get_entity_id_and_name
+from ..exceptions import ParseError
 
 
 class MatchSummaryParser(BaseParser):
@@ -14,7 +15,10 @@ class MatchSummaryParser(BaseParser):
             return None
         parsed_events = []
         for event in raw_events:
-            parsed_events.append(self._parse_event(event))
+            try:
+                parsed_events.append(self._parse_event(event))
+            except Exception as e:
+                raise ParseError(f'Error while parsing summary event {event}: {e}')
         valid_events = [event for event in parsed_events if event is not None]
         return valid_events
 

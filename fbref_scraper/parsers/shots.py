@@ -5,6 +5,7 @@ import bs4
 
 from .base import BaseParser
 from .utils import get_period_and_minute, get_entity_id_and_name, get_notes
+from ..exceptions import ParseError
 
 
 class ShotsParser(BaseParser):
@@ -15,7 +16,10 @@ class ShotsParser(BaseParser):
             return None
         parsed_shots = []
         for shot in raw_shots:
-            parsed_shots.append(self._parse_shot(shot))
+            try:
+                parsed_shots.append(self._parse_shot(shot))
+            except Exception as e:
+                raise ParseError(f'Error while parsing shot event {shot}: {e}')
         return parsed_shots
 
     @staticmethod
