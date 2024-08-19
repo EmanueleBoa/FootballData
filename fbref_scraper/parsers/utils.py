@@ -23,4 +23,4 @@ def get_notes(tag: bs4.element.Tag) -> Optional[str]:
     notes = tag.find('td', {'data-stat': 'notes'})
     if notes is None or notes.text == '':
         return None
-    return notes
+    return notes.text
