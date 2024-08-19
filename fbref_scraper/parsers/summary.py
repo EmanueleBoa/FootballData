@@ -4,23 +4,25 @@ import bs4
 
 from .base import BaseParser
 from .utils import get_period_and_minute, get_entity_id_and_name
-from ..exceptions import ParseError
 
 
 class MatchSummaryParser(BaseParser):
-    def parse(self, html: str) -> List[dict]:
+    def parse(self, html: str) -> Optional[List[dict]]:
         soup = bs4.BeautifulSoup(html, 'html.parser')
         raw_events = self._get_raw_events(soup)
-        try:
-            parsed_events = [self._parse_event(event) for event in raw_events]
-        except Exception as e:
-            raise ParseError(f'Error while parsing match summary: {e}')
+        if raw_events is None:
+            return None
+        parsed_events = []
+        for event in raw_events:
+            parsed_events.append(self._parse_event(event))
         valid_events = [event for event in parsed_events if event is not None]
         return valid_events
 
     @staticmethod
-    def _get_raw_events(soup: bs4.BeautifulSoup) -> bs4.element.ResultSet:
+    def _get_raw_events(soup: bs4.BeautifulSoup) -> Optional[bs4.element.ResultSet]:
         match_summary = soup.find('div', {'id': 'events_wrap'})
+        if match_summary is None:
+            return None
         return match_summary.find_all('div', class_='event')
 
     def _parse_event(self, event) -> Optional[dict]:
