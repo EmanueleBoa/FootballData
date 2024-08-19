@@ -4,6 +4,7 @@ from typing import Optional, List
 import bs4
 
 from .base import BaseParser
+from .utils import get_notes
 from ..exceptions import ParseError
 
 
@@ -110,7 +111,4 @@ class FixturesParser(BaseParser):
 
     @staticmethod
     def _get_notes(fixture: bs4.element.Tag) -> Optional[str]:
-        notes = fixture.find('td', {'data-stat': 'notes'})
-        if notes is None or notes.text == '':
-            return None
-        return notes.text.lower().replace(' ', '_')
+        return get_notes(fixture)

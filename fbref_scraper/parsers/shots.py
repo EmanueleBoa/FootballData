@@ -4,7 +4,7 @@ from typing import List, Optional, Tuple
 import bs4
 
 from .base import BaseParser
-from .utils import get_period_and_minute, get_entity_id_and_name
+from .utils import get_period_and_minute, get_entity_id_and_name, get_notes
 
 
 class ShotsParser(BaseParser):
@@ -94,7 +94,7 @@ class ShotsParser(BaseParser):
 
     @staticmethod
     def _get_notes(shot: bs4.element.Tag) -> Optional[str]:
-        notes = shot.find('td', {'data-stat': 'notes'})
-        if notes is None or notes.text == '':
+        notes = get_notes(shot)
+        if notes is None:
             return None
-        return notes.text.lower().replace(' ', '_')
+        return notes.lower().replace(' ', '_')

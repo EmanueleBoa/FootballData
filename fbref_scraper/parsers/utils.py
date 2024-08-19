@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Tuple, Optional
 
 import bs4
 
@@ -17,3 +17,10 @@ def get_entity_id_and_name(entity: bs4.element.Tag) -> Tuple[str, str]:
     entity_id = entity.get('href').split('/')[3]
     entity_name = entity.text
     return entity_id, entity_name
+
+
+def get_notes(tag: bs4.element.Tag) -> Optional[str]:
+    notes = tag.find('td', {'data-stat': 'notes'})
+    if notes is None or notes.text == '':
+        return None
+    return notes
