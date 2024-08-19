@@ -17,20 +17,17 @@ class FixturesParser(BaseParser):
                 parsed_fixtures.append(self._parse_fixture(fixture))
             except Exception as e:
                 raise ParseError(f'Error while parsing fixture {fixture}: {e}')
-
-        valid_fixtures = [fixture for fixture in parsed_fixtures if fixture is not None]
-        return valid_fixtures
+        return parsed_fixtures
 
     @staticmethod
     def _get_raw_fixtures(soup: bs4.BeautifulSoup) -> bs4.element.ResultSet:
-        fixtures_table = soup.find_all('tbody')[0]
-        fixtures = fixtures_table.find_all('tr')
+        fixtures_table = soup.find('tbody')
+        fixtures = fixtures_table.find_all(lambda tag: tag.name == 'tr' and not tag.has_attr("class"))
         return fixtures
 
     def _parse_fixture(self, fixture: bs4.element.Tag) -> Optional[dict]:
+        competition_round = self._get_round(fixture)
         week = self._get_match_week(fixture)
-        if week is None:
-            return None
         date = self._get_match_date(fixture)
         home_team_id, home_team_name = self._get_team_info(fixture, 'home')
         away_team_id, away_team_name = self._get_team_info(fixture, 'away')
@@ -38,8 +35,10 @@ class FixturesParser(BaseParser):
         home_xg = self._get_team_xg(fixture, 'home')
         away_xg = self._get_team_xg(fixture, 'away')
         match_id = self._get_match_id(fixture)
+        notes = self._get_notes(fixture)
         return {
             'match_id': match_id,
+            'round': competition_round,
             'week': week,
             'date': date,
             'home_team_id': home_team_id,
@@ -49,8 +48,16 @@ class FixturesParser(BaseParser):
             'home_goals': home_goals,
             'away_goals': away_goals,
             'home_xg': home_xg,
-            'away_xg': away_xg
+            'away_xg': away_xg,
+            'notes': notes
         }
+
+    @staticmethod
+    def _get_round(fixture: bs4.element.Tag) -> Optional[str]:
+        competition_round = fixture.find('th', {'data-stat': 'round'})
+        if competition_round is None:
+            return None
+        return competition_round.text
 
     @staticmethod
     def _get_match_week(fixture: bs4.element.Tag) -> Optional[int]:
@@ -100,3 +107,10 @@ class FixturesParser(BaseParser):
         if url is None:
             return None
         return url.split('/')[3]
+
+    @staticmethod
+    def _get_notes(fixture: bs4.element.Tag) -> Optional[str]:
+        notes = fixture.find('td', {'data-stat': 'notes'})
+        if notes is None or notes.text == '':
+            return None
+        return notes.text.lower().replace(' ', '_')
