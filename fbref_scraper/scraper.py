@@ -32,7 +32,7 @@ class FbRefScraper:
             logging.warning(f'No shots found for match {match_id}')
         return {
             'match_id': match_id,
-            'summary': summary,
+            'match_summary': summary,
             'shots': shots
         }
 
