@@ -1,3 +1,4 @@
+import logging
 import re
 from typing import Optional, List
 
@@ -5,7 +6,6 @@ import bs4
 
 from .base import BaseParser
 from .utils import get_notes
-from ..exceptions import ParseError
 
 
 class FixturesParser(BaseParser):
@@ -17,7 +17,7 @@ class FixturesParser(BaseParser):
             try:
                 parsed_fixtures.append(self._parse_fixture(fixture))
             except Exception as e:
-                raise ParseError(f'Error while parsing fixture {fixture}: {e}')
+                logging.error(f'Error while parsing fixture {fixture}: {e}')
         return parsed_fixtures
 
     @staticmethod
@@ -26,7 +26,7 @@ class FixturesParser(BaseParser):
         fixtures = fixtures_table.find_all(lambda tag: tag.name == 'tr' and not tag.has_attr("class"))
         return fixtures
 
-    def _parse_fixture(self, fixture: bs4.element.Tag) -> Optional[dict]:
+    def _parse_fixture(self, fixture: bs4.element.Tag) -> dict:
         competition_round = self._get_round(fixture)
         week = self._get_match_week(fixture)
         date = self._get_match_date(fixture)

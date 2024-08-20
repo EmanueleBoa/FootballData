@@ -1,3 +1,5 @@
+import logging
+
 from .config import BASE_URL, competition_name_to_id
 from .parsers import FixturesParser, MatchSummaryParser, ShotsParser
 from .network import RequestHandler
@@ -23,7 +25,11 @@ class FbRefScraper:
         url = f'{BASE_URL}/matches/{match_id}/'
         html = self.request_handler.get(url)
         summary = MatchSummaryParser().parse(html)
+        if summary is None:
+            logging.warning(f'No match summary found for match {match_id}')
         shots = ShotsParser().parse(html)
+        if shots is None:
+            logging.warning(f'No shots found for match {match_id}')
         return {
             'match_id': match_id,
             'summary': summary,
@@ -34,6 +40,8 @@ class FbRefScraper:
         url = f'{BASE_URL}/matches/{match_id}/'
         html = self.request_handler.get(url)
         summary = MatchSummaryParser().parse(html)
+        if summary is None:
+            logging.warning(f'No match summary found for match {match_id}')
         return {
             'match_id': match_id,
             'summary': summary
@@ -43,6 +51,8 @@ class FbRefScraper:
         url = f'{BASE_URL}/matches/{match_id}/'
         html = self.request_handler.get(url)
         shots = ShotsParser().parse(html)
+        if shots is None:
+            logging.warning(f'No shots found for match {match_id}')
         return {
             'match_id': match_id,
             'shots': shots

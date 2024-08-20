@@ -1,3 +1,4 @@
+import logging
 import re
 from typing import List, Optional, Tuple
 
@@ -5,7 +6,6 @@ import bs4
 
 from .base import BaseParser
 from .utils import get_period_and_minute, get_entity_id_and_name, get_notes
-from ..exceptions import ParseError
 
 
 class ShotsParser(BaseParser):
@@ -19,7 +19,7 @@ class ShotsParser(BaseParser):
             try:
                 parsed_shots.append(self._parse_shot(shot))
             except Exception as e:
-                raise ParseError(f'Error while parsing shot event {shot}: {e}')
+                logging.error(f'Error while parsing shot event {shot}: {e}')
         return parsed_shots
 
     @staticmethod
