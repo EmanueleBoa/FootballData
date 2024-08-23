@@ -22,13 +22,13 @@ class WebClient:
 
             except (HTTPError, ConnectionError, Timeout) as e:
                 retries += 1
-                logging.warning(f"Retry {retries} for URL: {url}. Error: {e}")
+                logging.warning(f'Retry {retries} for URL: {url}. Error: {e}')
 
                 if retries > self.max_retries:
-                    raise RequestError(f"Failed to retrieve data from {url} after {self.max_retries} attempts") from e
+                    raise RequestError(f'Failed to retrieve data from {url} after {self.max_retries} attempts') from e
 
                 sleep_time = self.backoff_factor * (2 ** (retries - 1))
                 time.sleep(sleep_time)
 
             except RequestException as e:
-                raise RequestError(f"Request failed due to a non-retryable error: {str(e)}") from e
+                raise RequestError(f'Request failed due to a non-retryable error: {str(e)}') from e
