@@ -1,13 +1,13 @@
 import logging
 
-from .config import BASE_URL, competition_name_to_id
+from .config import BASE_URL, competition_name_to_id, MAX_RETRIES, BACKOFF_FACTOR
 from .network.web_client import WebClient
 from .parsers import FixturesParser, MatchSummaryParser, ShotsParser
 
 
 class FbRefScraper:
     def __init__(self):
-        self.client = WebClient()
+        self.client = WebClient(max_retries=MAX_RETRIES, backoff_factor=BACKOFF_FACTOR)
 
     def download_fixtures(self, competition_name: str, season: str) -> dict:
         competition_id = self._get_competition_id(competition_name)
