@@ -7,7 +7,7 @@ from requests import HTTPError, ConnectionError, Timeout, RequestException
 from ..exceptions import RequestError
 
 
-class RequestHandler:
+class WebClient:
     def __init__(self, max_retries: int = 3, backoff_factor: float = 3.):
         self.max_retries = max_retries
         self.backoff_factor = backoff_factor

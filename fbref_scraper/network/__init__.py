@@ -1,1 +1,1 @@
-from fbref_scraper.network.request_handler import RequestHandler
+from fbref_scraper.network.web_client import WebClient

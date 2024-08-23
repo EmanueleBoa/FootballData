@@ -1,18 +1,18 @@
 import logging
 
 from .config import BASE_URL, competition_name_to_id
+from .network.web_client import WebClient
 from .parsers import FixturesParser, MatchSummaryParser, ShotsParser
-from .network import RequestHandler
 
 
 class FbRefScraper:
     def __init__(self):
-        self.request_handler = RequestHandler()
+        self.client = WebClient()
 
     def download_fixtures(self, competition_name: str, season: str) -> dict:
         competition_id = self._get_competition_id(competition_name)
         url = f'{BASE_URL}/comps/{competition_id}/{season}/schedule/'
-        html = self.request_handler.get(url)
+        html = self.client.get(url)
         fixtures = FixturesParser().parse(html)
         return {
             'competition_id': competition_id,
@@ -23,7 +23,7 @@ class FbRefScraper:
 
     def download_match_report(self, match_id: str) -> dict:
         url = f'{BASE_URL}/matches/{match_id}/'
-        html = self.request_handler.get(url)
+        html = self.client.get(url)
         summary = MatchSummaryParser().parse(html)
         if summary is None:
             logging.warning(f'No match summary found for match {match_id}')
@@ -38,7 +38,7 @@ class FbRefScraper:
 
     def download_match_summary(self, match_id: str) -> dict:
         url = f'{BASE_URL}/matches/{match_id}/'
-        html = self.request_handler.get(url)
+        html = self.client.get(url)
         summary = MatchSummaryParser().parse(html)
         if summary is None:
             logging.warning(f'No match summary found for match {match_id}')
@@ -49,7 +49,7 @@ class FbRefScraper:
 
     def download_match_shots(self, match_id: str) -> dict:
         url = f'{BASE_URL}/matches/{match_id}/'
-        html = self.request_handler.get(url)
+        html = self.client.get(url)
         shots = ShotsParser().parse(html)
         if shots is None:
             logging.warning(f'No shots found for match {match_id}')
@@ -65,4 +65,3 @@ class FbRefScraper:
             raise Exception(f'Competition {competition_name} not supported! '
                             f'Supported competitions are: {list(competition_name_to_id.keys())}')
         return competition_id
-
