@@ -20,12 +20,6 @@ class FixturesParser(BaseParser):
                 logging.error(f'Error while parsing fixture {fixture}: {e}')
         return parsed_fixtures
 
-    @staticmethod
-    def _get_raw_fixtures(soup: bs4.BeautifulSoup) -> bs4.element.ResultSet:
-        fixtures_table = soup.find('tbody')
-        fixtures = fixtures_table.find_all(lambda tag: tag.name == 'tr' and not tag.has_attr("class"))
-        return fixtures
-
     def _parse_fixture(self, fixture: bs4.element.Tag) -> dict:
         competition_round = self._get_round(fixture)
         week = self._get_match_week(fixture)
@@ -52,6 +46,12 @@ class FixturesParser(BaseParser):
             'away_xg': away_xg,
             'notes': notes
         }
+
+    @staticmethod
+    def _get_raw_fixtures(soup: bs4.BeautifulSoup) -> bs4.element.ResultSet:
+        fixtures_table = soup.find('tbody')
+        fixtures = fixtures_table.find_all(lambda tag: tag.name == 'tr' and not tag.has_attr("class"))
+        return fixtures
 
     @staticmethod
     def _get_round(fixture: bs4.element.Tag) -> Optional[str]:

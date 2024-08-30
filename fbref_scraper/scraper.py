@@ -1,6 +1,6 @@
 import logging
 
-from .config import BASE_URL, competition_name_to_id, MAX_RETRIES, BACKOFF_FACTOR
+from .config import BASE_URL, MAX_RETRIES, BACKOFF_FACTOR, competition_name_to_id
 from .network.web_client import WebClient
 from .parsers import FixturesParser, MatchSummaryParser, ShotsParser
 

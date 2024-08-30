@@ -22,14 +22,6 @@ class ShotsParser(BaseParser):
                 logging.error(f'Error while parsing shot event {shot}: {e}')
         return parsed_shots
 
-    @staticmethod
-    def _get_raw_shots(soup: bs4.BeautifulSoup) -> Optional[bs4.element.ResultSet]:
-        shots_table = soup.find('table', {'id': 'shots_all'})
-        if shots_table is None:
-            return None
-        table = shots_table.find('tbody')
-        return table.find_all('tr', {'class': re.compile("^shots")})
-
     def _parse_shot(self, shot: bs4.element.Tag) -> dict:
         period, minute = self._get_shot_period_and_minute(shot)
         team_id, team_name = self._get_team_info(shot)
@@ -54,6 +46,14 @@ class ShotsParser(BaseParser):
             'body_part': body_part,
             'notes': notes
         }
+
+    @staticmethod
+    def _get_raw_shots(soup: bs4.BeautifulSoup) -> Optional[bs4.element.ResultSet]:
+        shots_table = soup.find('table', {'id': 'shots_all'})
+        if shots_table is None:
+            return None
+        table = shots_table.find('tbody')
+        return table.find_all('tr', {'class': re.compile("^shots")})
 
     @staticmethod
     def _get_shot_period_and_minute(shot: bs4.element.Tag) -> Tuple[str, int]:

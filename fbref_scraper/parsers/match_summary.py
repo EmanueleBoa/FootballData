@@ -22,13 +22,6 @@ class MatchSummaryParser(BaseParser):
         valid_events = [event for event in parsed_events if event is not None]
         return valid_events
 
-    @staticmethod
-    def _get_raw_events(soup: bs4.BeautifulSoup) -> Optional[bs4.element.ResultSet]:
-        match_summary = soup.find('div', {'id': 'events_wrap'})
-        if match_summary is None:
-            return None
-        return match_summary.find_all('div', class_='event')
-
     def _parse_event(self, event) -> Optional[dict]:
         period, minute = self._get_event_period_and_minute(event)
         event_type = self._get_event_type(event)
@@ -44,6 +37,13 @@ class MatchSummaryParser(BaseParser):
             'period': period,
             'minute': minute
         }
+
+    @staticmethod
+    def _get_raw_events(soup: bs4.BeautifulSoup) -> Optional[bs4.element.ResultSet]:
+        match_summary = soup.find('div', {'id': 'events_wrap'})
+        if match_summary is None:
+            return None
+        return match_summary.find_all('div', class_='event')
 
     @staticmethod
     def _get_event_type(event: bs4.element.Tag) -> str:
