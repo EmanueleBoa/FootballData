@@ -71,7 +71,7 @@ class FixturesParser(BaseParser):
     def _get_match_date(fixture: bs4.element.Tag) -> str:
         date = fixture.find('td', {'data-stat': 'date'}).text
         start_time = fixture.find('td', {'data-stat': 'start_time'}).text.replace(' ', '')
-        return date + (start_time != '') * 'T' + start_time
+        return f"{date}{'T' if start_time else ''}{start_time}"
 
     @staticmethod
     def _get_team_info(fixture: bs4.element.Tag, ground: str) -> tuple[str, str]:
