@@ -1,9 +1,9 @@
 import logging
 
-from .config import BASE_URL, MAX_RETRIES, BACKOFF_FACTOR, competition_name_to_id
-from .models import SeasonFixtures, MatchSummary, MatchShots, MatchReport
-from .network.web_client import WebClient
-from .parsers import FixturesParser, MatchSummaryParser, ShotsParser
+from fbref_scraper.config import BASE_URL, MAX_RETRIES, BACKOFF_FACTOR, competition_name_to_id
+from fbref_scraper.models import SeasonFixtures, MatchSummary, MatchShots, MatchReport
+from fbref_scraper.network.web_client import WebClient
+from fbref_scraper.parsers import FixturesParser, MatchSummaryParser, ShotsParser
 
 
 class FbRefScraper:

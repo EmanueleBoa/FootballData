@@ -3,9 +3,9 @@ from typing import Optional, List
 
 import bs4
 
-from .base import BaseParser
-from .utils import get_period_and_minute, get_entity_id_and_name
-from ..models import SummaryEvent
+from fbref_scraper.parsers.base import BaseParser
+from fbref_scraper.parsers.utils import get_period_and_minute, get_entity_id_and_name
+from fbref_scraper.models import SummaryEvent
 
 
 class MatchSummaryParser(BaseParser):

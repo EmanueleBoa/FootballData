@@ -4,9 +4,9 @@ from typing import List, Optional, Tuple
 
 import bs4
 
-from .base import BaseParser
-from .utils import get_period_and_minute, get_entity_id_and_name, get_notes
-from ..models import ShotEvent
+from fbref_scraper.parsers.base import BaseParser
+from fbref_scraper.parsers.utils import get_period_and_minute, get_entity_id_and_name, get_notes
+from fbref_scraper.models import ShotEvent
 
 
 class ShotsParser(BaseParser):

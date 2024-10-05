@@ -4,9 +4,9 @@ from typing import Optional, List
 
 import bs4
 
-from .base import BaseParser
-from .utils import get_notes
-from ..models import Fixture
+from fbref_scraper.parsers.base import BaseParser
+from fbref_scraper.parsers.utils import get_notes
+from fbref_scraper.models import Fixture
 
 
 class FixturesParser(BaseParser):

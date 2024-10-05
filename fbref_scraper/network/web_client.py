@@ -4,7 +4,7 @@ import time
 import requests
 from requests import HTTPError, ConnectionError, Timeout, RequestException
 
-from ..exceptions import RequestError
+from fbref_scraper.exceptions import RequestError
 
 
 class WebClient:
