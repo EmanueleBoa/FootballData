@@ -5,10 +5,11 @@ import bs4
 
 from .base import BaseParser
 from .utils import get_period_and_minute, get_entity_id_and_name
+from ..models import SummaryEvent
 
 
 class MatchSummaryParser(BaseParser):
-    def parse(self, html: str) -> Optional[List[dict]]:
+    def parse(self, html: str) -> Optional[List[SummaryEvent]]:
         soup = bs4.BeautifulSoup(html, 'html.parser')
         raw_events = self._get_raw_events(soup)
         if raw_events is None:
@@ -22,21 +23,14 @@ class MatchSummaryParser(BaseParser):
         valid_events = [event for event in parsed_events if event is not None]
         return valid_events
 
-    def _parse_event(self, event) -> Optional[dict]:
+    def _parse_event(self, event) -> Optional[SummaryEvent]:
         period, minute = self._get_event_period_and_minute(event)
         event_type = self._get_event_type(event)
         team_id = self._get_team_id(event)
         player_id, player_name = self._get_player_info(event)
         if player_id is None:
             return None
-        return {
-            'team_id': team_id,
-            'player_id': player_id,
-            'player_name': player_name,
-            'type': event_type,
-            'period': period,
-            'minute': minute
-        }
+        return SummaryEvent(team_id, player_id, player_name, event_type, period, minute)
 
     @staticmethod
     def _get_raw_events(soup: bs4.BeautifulSoup) -> Optional[bs4.element.ResultSet]:

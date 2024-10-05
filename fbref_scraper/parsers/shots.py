@@ -6,10 +6,11 @@ import bs4
 
 from .base import BaseParser
 from .utils import get_period_and_minute, get_entity_id_and_name, get_notes
+from ..models import ShotEvent
 
 
 class ShotsParser(BaseParser):
-    def parse(self, html: str) -> Optional[List[dict]]:
+    def parse(self, html: str) -> Optional[List[ShotEvent]]:
         soup = bs4.BeautifulSoup(html, 'html.parser')
         raw_shots = self._get_raw_shots(soup)
         if raw_shots is None:
@@ -22,7 +23,7 @@ class ShotsParser(BaseParser):
                 logging.error(f'Error while parsing shot event {shot}: {e}')
         return parsed_shots
 
-    def _parse_shot(self, shot: bs4.element.Tag) -> dict:
+    def _parse_shot(self, shot: bs4.element.Tag) -> ShotEvent:
         period, minute = self._get_shot_period_and_minute(shot)
         team_id, team_name = self._get_team_info(shot)
         player_id, player_name = self._get_player_info(shot)
@@ -32,20 +33,8 @@ class ShotsParser(BaseParser):
         distance = self._get_distance(shot)
         body_part = self._get_body_part(shot)
         notes = self._get_notes(shot)
-        return {
-            'period': period,
-            'minute': minute,
-            'team_id': team_id,
-            'team_name': team_name,
-            'player_id': player_id,
-            'player_name': player_name,
-            'xg': xg,
-            'psxg': psxg,
-            'outcome': outcome,
-            'distance': distance,
-            'body_part': body_part,
-            'notes': notes
-        }
+        return ShotEvent(period, minute, team_id, team_name, player_id, player_name,
+                         xg, psxg, outcome, distance, body_part, notes)
 
     @staticmethod
     def _get_raw_shots(soup: bs4.BeautifulSoup) -> Optional[bs4.element.ResultSet]:

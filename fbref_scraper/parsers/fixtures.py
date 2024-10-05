@@ -6,10 +6,11 @@ import bs4
 
 from .base import BaseParser
 from .utils import get_notes
+from ..models import Fixture
 
 
 class FixturesParser(BaseParser):
-    def parse(self, html: str) -> List[dict]:
+    def parse(self, html: str) -> List[Fixture]:
         soup = bs4.BeautifulSoup(html, 'html.parser')
         fixtures = self._get_raw_fixtures(soup)
         parsed_fixtures = []
@@ -20,7 +21,7 @@ class FixturesParser(BaseParser):
                 logging.error(f'Error while parsing fixture {fixture}: {e}')
         return parsed_fixtures
 
-    def _parse_fixture(self, fixture: bs4.element.Tag) -> dict:
+    def _parse_fixture(self, fixture: bs4.element.Tag) -> Fixture:
         competition_round = self._get_round(fixture)
         week = self._get_match_week(fixture)
         date = self._get_match_date(fixture)
@@ -31,21 +32,9 @@ class FixturesParser(BaseParser):
         away_xg = self._get_team_xg(fixture, 'away')
         match_id = self._get_match_id(fixture)
         notes = self._get_notes(fixture)
-        return {
-            'match_id': match_id,
-            'round': competition_round,
-            'week': week,
-            'date': date,
-            'home_team_id': home_team_id,
-            'away_team_id': away_team_id,
-            'home_team_name': home_team_name,
-            'away_team_name': away_team_name,
-            'home_goals': home_goals,
-            'away_goals': away_goals,
-            'home_xg': home_xg,
-            'away_xg': away_xg,
-            'notes': notes
-        }
+        return Fixture(match_id, competition_round, week, date,
+                       home_team_id, away_team_id, home_team_name, away_team_name,
+                       home_goals, away_goals, home_xg, away_xg, notes)
 
     @staticmethod
     def _get_raw_fixtures(soup: bs4.BeautifulSoup) -> bs4.element.ResultSet:
