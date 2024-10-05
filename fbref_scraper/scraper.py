@@ -1,6 +1,7 @@
 import logging
 
 from .config import BASE_URL, MAX_RETRIES, BACKOFF_FACTOR, competition_name_to_id
+from .models import SeasonFixtures, MatchSummary, MatchShots, MatchReport
 from .network.web_client import WebClient
 from .parsers import FixturesParser, MatchSummaryParser, ShotsParser
 
@@ -14,12 +15,7 @@ class FbRefScraper:
         url = f'{BASE_URL}/comps/{competition_id}/{season}/schedule/'
         html = self.client.get(url)
         fixtures = FixturesParser().parse(html)
-        return {
-            'competition_id': competition_id,
-            'competition_name': competition_name,
-            'season': season,
-            'fixtures': fixtures
-        }
+        return SeasonFixtures(competition_id, competition_name, season, fixtures).to_dict()
 
     def download_match_report(self, match_id: str) -> dict:
         url = f'{BASE_URL}/matches/{match_id}/'
@@ -30,11 +26,7 @@ class FbRefScraper:
         shots = ShotsParser().parse(html)
         if shots is None:
             logging.warning(f'No shots found for match {match_id}')
-        return {
-            'match_id': match_id,
-            'match_summary': summary,
-            'shots': shots
-        }
+        return MatchReport(match_id, summary, shots).to_dict()
 
     def download_match_summary(self, match_id: str) -> dict:
         url = f'{BASE_URL}/matches/{match_id}/'
@@ -42,10 +34,7 @@ class FbRefScraper:
         summary = MatchSummaryParser().parse(html)
         if summary is None:
             logging.warning(f'No match summary found for match {match_id}')
-        return {
-            'match_id': match_id,
-            'summary': summary
-        }
+        return MatchSummary(match_id, summary).to_dict()
 
     def download_match_shots(self, match_id: str) -> dict:
         url = f'{BASE_URL}/matches/{match_id}/'
@@ -53,10 +42,7 @@ class FbRefScraper:
         shots = ShotsParser().parse(html)
         if shots is None:
             logging.warning(f'No shots found for match {match_id}')
-        return {
-            'match_id': match_id,
-            'shots': shots
-        }
+        return MatchShots(match_id, shots).to_dict()
 
     @staticmethod
     def _get_competition_id(competition_name: str) -> str:
