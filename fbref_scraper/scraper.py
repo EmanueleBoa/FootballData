@@ -1,6 +1,6 @@
 import logging
 
-from fbref_scraper.config import BASE_URL, MAX_RETRIES, BACKOFF_FACTOR, competition_name_to_id
+from fbref_scraper.config import BASE_URL, MAX_RETRIES, BACKOFF_FACTOR, COMPETITION_NAME_TO_ID
 from fbref_scraper.models import SeasonFixtures, MatchSummary, MatchShots, MatchReport
 from fbref_scraper.network.web_client import WebClient
 from fbref_scraper.parsers import FixturesParser, MatchSummaryParser, ShotsParser
@@ -46,8 +46,8 @@ class FbRefScraper:
 
     @staticmethod
     def _get_competition_id(competition_name: str) -> str:
-        competition_id = competition_name_to_id.get(competition_name)
+        competition_id = COMPETITION_NAME_TO_ID.get(competition_name)
         if competition_id is None:
             raise Exception(f'Competition {competition_name} not supported! '
-                            f'Supported competitions are: {list(competition_name_to_id.keys())}')
+                            f'Supported competitions are: {list(COMPETITION_NAME_TO_ID.keys())}')
         return competition_id
